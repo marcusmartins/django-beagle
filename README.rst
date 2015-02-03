@@ -36,9 +36,11 @@ Add beagle middleware to time your views:
         'beagle.middleware.MetricsRequestMiddleware',
     ) + MIDDLEWARE_CLASSES
 
-Add a default set of tags that you would like to be set on every request.
+Add a dictionary of tags that you would like to be set on every request. It's useful to set environment wide values like the version of the project.
 
     BEAGLE_METRICS_DEFAULT_TAGS = {
         'environment': 'staging',
         'version': '1.0.2'
     }
+
+If that dictionary is not set, no global tags will be set with the request.
