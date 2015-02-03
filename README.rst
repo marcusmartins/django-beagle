@@ -18,29 +18,30 @@ To get the latest commit from GitHub
 Settings
 --------
 
-You need to set the following settings:
+You need to set the following settings::
 
     DATADOG_API_KEY = 'myapikey'
     DATADOG_APP_NAME = 'myapp'
 
-Add beagle to your INSTALLED_APPS
+Add beagle to your INSTALLED_APPS::
 
     INSTALLED_APPS = (
         ...,
         'beagle',
     )
 
-Add beagle middleware to time your views:
+Add beagle middleware as to the top of your MIDDLEWARE_CLASSES to time your views::
 
     MIDDLEWARE_CLASSES = (
         'beagle.middleware.MetricsRequestMiddleware',
-    ) + MIDDLEWARE_CLASSES
+        ...
+    )
 
-Add a dictionary of tags that you would like to be set on every request. It's useful to set environment wide values like the version of the project.
+Add a dictionary of tags that you would like to be set on every request. It's useful to set environment wide values like the version of the project.::
 
     BEAGLE_METRICS_DEFAULT_TAGS = {
         'environment': 'staging',
         'version': '1.0.2'
     }
 
-If that dictionary is not set, no global tags will be set with the request.
+If the dictionary is not set, no global tags will be sent with the request.
