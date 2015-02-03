@@ -51,7 +51,11 @@ class MetricsRequestMiddleware(object):
                 if request.user.is_superuser:
                     is_superuser = True
 
-            tags_dict = DEFAULT_TAGS_DICT.update({
+            # create new tags dictionary that merge the default
+            # and the request specific tags.
+            tags_dict = {}
+            tags_dict.update(DEFAULT_TAGS_DICT)
+            tags_dict.update({
                 'is_ajax': is_ajax,
                 'is_authenticated': is_authenticated,
                 'is_staff': is_staff,
