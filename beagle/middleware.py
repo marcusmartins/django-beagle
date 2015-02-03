@@ -1,4 +1,4 @@
-"""Middlewares for the datadog_metrics app."""
+"""Middlewares for the beagle app."""
 import inspect
 import time
 
@@ -9,7 +9,7 @@ from dogapi import dog_stats_api
 dog_stats_api.start(api_key=settings.DATADOG_API_KEY)
 
 
-DEFAULT_TAGS_DICT = getattr(settings, 'DATADOG_METRICS_DEFAULT_TAGS', {})
+DEFAULT_TAGS_DICT = getattr(settings, 'BEAGLE_DEFAULT_TAGS', {})
 
 
 class MetricsRequestMiddleware(object):
