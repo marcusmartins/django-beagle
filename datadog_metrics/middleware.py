@@ -9,6 +9,9 @@ from dogapi import dog_stats_api
 dog_stats_api.start(api_key=settings.DATADOG_API_KEY)
 
 
+DEFAULT_TAGS_DICT = getattr(settings, 'DATADOG_METRICS_DEFAULT_TAGS', {})
+
+
 class MetricsRequestMiddleware(object):
     """
     Measures request time and sends metric to Datadog.
@@ -48,7 +51,7 @@ class MetricsRequestMiddleware(object):
                 if request.user.is_superuser:
                     is_superuser = True
 
-            tags_dict = {
+            tags_dict = DEFAULT_TAGS_DICT.update({
                 'is_ajax': is_ajax,
                 'is_authenticated': is_authenticated,
                 'is_staff': is_staff,
@@ -57,7 +60,7 @@ class MetricsRequestMiddleware(object):
                 'module': request._view_module,
                 'view': request._view_name,
                 'full_path': request.get_full_path,
-                'path': request.path}
+                'path': request.path})
 
             tags = ['{}:{}'.format(key, val) for key, val in tags_dict.iteritems()]
 
