@@ -3,10 +3,8 @@ import inspect
 import time
 
 from django.conf import settings
-from dogapi import dog_stats_api
 
-# init datadog api
-dog_stats_api.start(api_key=settings.DATADOG_API_KEY)
+from .client import get_client
 
 
 DEFAULT_TAGS_DICT = getattr(settings, 'BEAGLE_DEFAULT_TAGS', {})
@@ -18,8 +16,10 @@ class MetricsRequestMiddleware(object):
 
     Credits go to: https://github.com/bitmazk/django-influxdb-metrics/blob/master/influxdb_metrics/middleware.py  # NOQA
     """
+    api_client = get_client()
+
     def __init__(self):
-        app_name = settings.DATADOG_APP_NAME
+        app_name = getattr(settings, 'DATADOG_APP_NAME', 'beagle')
         self.timing_metric = '{0}.django.request'.format(app_name)
 
     def process_view(self, request, view_func, view_args, view_kwargs):
@@ -34,10 +34,18 @@ class MetricsRequestMiddleware(object):
             pass
 
     def process_response(self, request, response):
-        self._record_time(request)
+        try:
+            timing, tags = self.record_time(request)
+        except TypeError:
+            # if we don't get a timing, don't send any timing
+            pass
+        else:
+            # datadog swallow any exception
+            # http://pydoc.datadoghq.com/en/latest/#doghttpapi
+            self.api_client.histogram(self.timing_metric, timing, tags=tags)
         return response
 
-    def _record_time(self, request):
+    def record_time(self, request):
         if hasattr(request, '_start_time'):
             request_time = time.time() - request._start_time
             is_ajax = request.is_ajax()
@@ -63,9 +71,7 @@ class MetricsRequestMiddleware(object):
                 'method': request.method,
                 'module': request._view_module,
                 'view': request._view_name,
-                'full_path': request.get_full_path,
                 'path': request.path})
 
-            tags = ['{}:{}'.format(key, val) for key, val in tags_dict.iteritems()]
-
-            dog_stats_api.histogram(self.timing_metric, request_time, tags=tags)
+            tags = ['{}:{}'.format(k, v) for k, v in tags_dict.iteritems()]
+            return request_time, tags

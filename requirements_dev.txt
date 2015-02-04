@@ -1,0 +1,10 @@
+# The debug toolbar itself
+
+-e .
+
+# Runtime dependencies
+Django
+
+# Testing
+coverage
+flake8
