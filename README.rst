@@ -30,7 +30,7 @@ Add beagle to your INSTALLED_APPS::
         'beagle',
     )
 
-Add beagle middleware as to the top of your MIDDLEWARE_CLASSES to time your views::
+Add beagle middleware as close to the top of your MIDDLEWARE_CLASSES to time your views as possible::
 
     MIDDLEWARE_CLASSES = (
         'beagle.middleware.MetricsRequestMiddleware',
@@ -39,7 +39,7 @@ Add beagle middleware as to the top of your MIDDLEWARE_CLASSES to time your view
 
 Add a dictionary of tags that you would like to be set on every request. It's useful to set environment wide values like the version of the project.::
 
-    BEAGLE_METRICS_DEFAULT_TAGS = {
+    BEAGLE_DEFAULT_TAGS = {
         'environment': 'staging',
         'version': '1.0.2'
     }
