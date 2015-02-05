@@ -26,6 +26,7 @@ class MetricsRequestMiddlewareTestCase(TestCase):
         self.assertIsNotNone(resp)
         timing, tags = resp
         self.assertGreater(timing, 0.000)
+        self.assertIn('is_authenticated:False', tags)
         self.assertIn('is_superuser:False', tags)
         self.assertIn('is_staff:False', tags)
         self.assertIn('is_ajax:False', tags)
@@ -63,4 +64,18 @@ class MetricsRequestMiddlewareTestCase(TestCase):
         self.assertIsNotNone(resp)
         timing, tags = resp
         self.assertGreater(timing, 0.000)
+        self.assertIn('is_authenticated:True', tags)
         self.assertIn('is_staff:True', tags)
+
+    def test_without_user(self):
+        req = RequestFactory().get('/')
+        req.user = None
+        mware = MetricsRequestMiddleware()
+        mware.process_view(req, 'view_funx', 'view_args', 'view_kwargs')
+        resp = mware.record_time(req)
+        self.assertIsNotNone(resp)
+        timing, tags = resp
+        self.assertGreater(timing, 0.000)
+        self.assertIn('is_authenticated:False', tags)
+        self.assertIn('is_staff:False', tags)
+        self.assertIn('is_superuser:False', tags)

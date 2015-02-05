@@ -52,12 +52,11 @@ class MetricsRequestMiddleware(object):
             is_authenticated = False
             is_staff = False
             is_superuser = False
-            if request.user.is_authenticated():
-                is_authenticated = True
-                if request.user.is_staff:
-                    is_staff = True
-                if request.user.is_superuser:
-                    is_superuser = True
+
+            if request.user is not None:
+                is_authenticated = request.user.is_authenticated()
+                is_staff = request.user.is_staff
+                is_superuser = request.user.is_superuser
 
             # create new tags dictionary that merge the default
             # and the request specific tags.
