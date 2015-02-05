@@ -18,14 +18,17 @@ class NullReporter(Reporter):
 
 
 def get_client():
-    """ Return an instance of the datadog client api.
+    """ Return a started instance of the datadog client api.
     If a 'DATADOG_API_KEY' is not set or it's None, we will disable
     collection and flushing of metrics - useful for development.
     """
     api_key = getattr(settings, 'DATADOG_API_KEY', None)
     if api_key is None:
         logger.debug("DATADOG_API_KEY not set, disabling it")
-        return dog_stats_api.start(disabled=True)
+        dog_stats_api.start(disabled=True)
+        dog_stats_api.reporter = NullReporter()
+    else:
+        # if we have the DATADOG_API_KEY set, we use that
+        dog_stats_api.start(api_key=api_key)
 
-    # if we have the DATADOG_API_KEY set, we use that
-    return dog_stats_api.start(api_key=api_key)
+    return dog_stats_api
