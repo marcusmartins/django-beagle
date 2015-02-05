@@ -25,7 +25,7 @@ class MetricsRequestMiddlewareTestCase(TestCase):
         resp = mware.record_time(req)
         self.assertIsNotNone(resp)
         timing, tags = resp
-        self.assertGreater(timing, 0)
+        self.assertGreater(timing, 0.000)
         self.assertIn('is_superuser:False', tags)
         self.assertIn('is_staff:False', tags)
         self.assertIn('is_ajax:False', tags)
@@ -40,7 +40,7 @@ class MetricsRequestMiddlewareTestCase(TestCase):
         resp = mware.record_time(req)
         self.assertIsNotNone(resp)
         timing, tags = resp
-        self.assertGreater(timing, 0)
+        self.assertGreater(timing, 0.000)
         self.assertIn('path:/mysuper/long/path', tags)
 
     def test_post(self):
@@ -51,7 +51,7 @@ class MetricsRequestMiddlewareTestCase(TestCase):
         resp = mware.record_time(req)
         self.assertIsNotNone(resp)
         timing, tags = resp
-        self.assertGreater(timing, 0)
+        self.assertGreater(timing, 0.000)
         self.assertIn('method:POST', tags)
 
     def test_as_staff(self):
@@ -62,5 +62,5 @@ class MetricsRequestMiddlewareTestCase(TestCase):
         resp = mware.record_time(req)
         self.assertIsNotNone(resp)
         timing, tags = resp
-        self.assertGreater(timing, 0)
+        self.assertGreater(timing, 0.000)
         self.assertIn('is_staff:True', tags)

@@ -4,6 +4,7 @@ from django.conf import settings
 from dogapi import dog_stats_api
 from dogapi.stats.reporters import Reporter
 
+
 logger = logging.getLogger(__name__)
 
 
